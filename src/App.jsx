@@ -27,7 +27,7 @@ function App() {
   const activePlayer = deriveActivePlayer(gameTurns);
 
 
-  let gameBoard = initialGameBoard;
+  let gameBoard = [...initialGameBoard.map(array => [...array])];
 
   for (const turn of gameTurns) {
     const {square , player} = turn;
@@ -46,6 +46,7 @@ let winner;
     }
   }
 
+  const hasDraw = gameTurns.length  === 9 && !winner;
   function handleSelectSquare(rowIndex, colIndex) {
     //setActivePlayer((curActivePlayer) => (curActivePlayer === "X" ? "O" : "X"));
     setGameTurns((prevTurns) => {
@@ -59,6 +60,9 @@ let winner;
     });
   }
 
+  function handleRestart(){
+    setGameTurns([]);
+  }
 
   return (
     <main>
@@ -75,7 +79,7 @@ let winner;
             isActive={activePlayer === "O"}
           />
         </ol>
-        {winner && <GameOver winner={winner}/>}
+        {(winner || hasDraw) && (<GameOver winner={winner} onRestart={handleRestart} />)}
         <GameBoard
           onSelectSquare={handleSelectSquare}
           board={gameBoard}
